@@ -22,3 +22,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     return { props: { todos: [] } };
   }
 };
+
+export default app;
