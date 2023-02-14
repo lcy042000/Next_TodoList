@@ -6,6 +6,9 @@ import { checkTodoAPI, deleteTodoAPI } from "../lib/api/todo";
 import TrashCanIcon from "../public/statics/svg/trash_can.svg";
 import CheckMarkIcon from "../public/statics/svg/check_mark.svg";
 import { useRouter } from "next/router";
+import { useSelector } from "../store";
+import { todoActions } from "../store/todo";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
   width: 100%;
@@ -140,8 +143,11 @@ interface IProps {
   todos: TodoType[];
 }
 
-const TodoList: React.FC<IProps> = ({ todos }) => {
+const TodoList: React.FC = () => {
+  const todos = useSelector((state) => state.todo.todos);
   const [localTodos, setLocalTodos] = useState(todos);
+
+  const dispatch = useDispatch();
 
   const getTodoColorNums = useCallback(() => {
     let red = 0;
@@ -219,7 +225,9 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
         return todo;
       });
 
-      setLocalTodos(newTodos);
+      dispatch(todoActions.setTodo(newTodos));
+
+      console.log("체크하였습니다.");
     } catch (e) {
       console.log(e);
     }
@@ -230,7 +238,7 @@ const TodoList: React.FC<IProps> = ({ todos }) => {
       await deleteTodoAPI(id);
       const newTodos = localTodos.filter((todo) => todo.id !== id);
 
-      setLocalTodos(newTodos);
+      dispatch(todoActions.setTodo(newTodos));
       console.log("삭제했습니다.");
     } catch (e) {
       console.log(e);
